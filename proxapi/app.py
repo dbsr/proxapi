@@ -11,6 +11,7 @@ sys.path.append(os.path.join(_here, '..'))
 from flask import Flask
 
 from apies import instantiate_apies
+from auth import authentication_required
 
 
 
@@ -34,4 +35,5 @@ def bootstrap_api_routes(app, apies):
     each'''
     for name, api in apies.items():
         route = '/' + name
-        app.add_url_rule(route, name, api.dispatcher, methods=['POST'])
+        decorated = authentication_required(api.dispatcher)
+        app.add_url_rule(route, name, decorated, methods=['POST'])

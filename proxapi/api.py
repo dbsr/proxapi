@@ -62,7 +62,7 @@ class BaseApi(object):
         return jsonify(resp)
             
 
-    def get(self, resource=None, params=None, mappings=None):
+    def get(self, resource=None, params=None, *args, **kwargs):
 
         '''make a GET request using provided resource and params.
         Optional mappings will be used to get specific parts of the 
@@ -76,4 +76,3 @@ class BaseApi(object):
         json_response = resp.json()
 
         return json_response
-
