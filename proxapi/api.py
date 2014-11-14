@@ -3,6 +3,7 @@
 
 import requests
 from flask import request, jsonify
+from logbook import debug, info, warn, error
 
 
 class BaseAuth(object):
@@ -24,7 +25,10 @@ class BaseAuth(object):
 
 class BaseApi(object):
     _auth = BaseAuth
-    def __init__(self, *args, **kwargs):
+    def __init__(self, name, *args, **kwargs):
+        self.name = name
+        debug("[{}] initiating api".format(self.name))
+
         session = requests.Session()
 
         if self._auth:
@@ -39,6 +43,9 @@ class BaseApi(object):
         if params is None:
             params = {}
 
+        info("[{}] request initiating with resource: '{}' and params: '{}'".format(
+            self.name, resource, repr(params)))
+
         # set default params
         params.update(self.default_params)
 
@@ -49,12 +56,14 @@ class BaseApi(object):
         try:
             r.raise_for_status()
         except:
+            error('[{}] request failed with status_code: {}'.format(
+                self.name, r.status_code))
             return None
 
         return r
 
     def dispatcher(self):
-        '''simple dispatch proxy converting json data to arguments for 
+        '''simple dispatch proxy converting json data to arguments for
         the actual api proxy handler'''
         try:
             resp = self.get(**request.get_json())
@@ -62,12 +71,11 @@ class BaseApi(object):
             return jsonify(dict(
                 error=e.message)), 400
         return jsonify(resp)
-            
+
 
     def get(self, resource=None, params=None, *args, **kwargs):
-
         '''make a GET request using provided resource and params.
-        Optional mappings will be used to get specific parts of the 
+        Optional mappings will be used to get specific parts of the
         JSON response.'''
         if not resource:
             resource = ''
