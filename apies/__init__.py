@@ -19,6 +19,6 @@ def instantiate_apies(secrets):
             name = api.strip('.py')
             fpath = os.path.join(_here, api)
             module = imp.load_source(name, fpath)
-            apies[name] = module.__dict__['Api'](**secrets[name])
+            apies[name] = module.__dict__['Api'](**secrets.get(name, {}))
 
     return apies

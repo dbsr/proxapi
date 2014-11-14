@@ -25,10 +25,12 @@ class BaseAuth(object):
 class BaseApi(object):
     _auth = BaseAuth
     def __init__(self, *args, **kwargs):
-        auth = self._auth(*args, **kwargs)
-
         session = requests.Session()
-        session.auth = auth
+
+        if self._auth:
+            auth = self._auth(*args, **kwargs)
+            session.auth = auth
+
         self.session = session
 
     def make_request(self, resource=None, params=None):
