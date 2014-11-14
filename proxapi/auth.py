@@ -21,10 +21,11 @@ def authentication_required(f):
         try:
             payload = request.get_json()
 
-            m = hashlib.md5()
-            m.update(str(int(time.time())))
-            m.update(secrets['secret'])
+            # the order of updates is important
+            m = hashlib.sha512()
             m.update(payload['key'])
+            m.update(secrets['secret'])
+            m.update(str(int(time.time())))
 
             if m.hexdigest() == payload['sig']:
                 return f(*args, **kwargs)
@@ -32,6 +33,7 @@ def authentication_required(f):
         except:
             pass
 
+        # we only get here if the sig is invalid or required params were missing
         abort(401)
 
     return decorator

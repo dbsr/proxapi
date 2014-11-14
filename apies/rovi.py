@@ -29,3 +29,4 @@ class RoviAuth(BaseAuth):
 class Api(BaseApi):
     _auth = RoviAuth
     default_params = {'format': 'json'}
+    base_url = 'http://api.rovicorp.com/data/v1.1'
