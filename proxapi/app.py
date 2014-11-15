@@ -12,12 +12,12 @@ from flask import Flask
 
 from apies import instantiate_apies
 from auth import authentication_required
+from config import config
 
 
 
-
-def init_app(config=None):
-    apies = instantiate_apies(config['secrets'])
+def init_app():
+    apies = instantiate_apies(config)
 
     app = Flask(__name__)
 
