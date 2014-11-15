@@ -96,14 +96,15 @@ class BaseApi(object):
         return json_response
 
     def get_mapped_response(self, response, mappings):
+        '''uses the list of mappings to traverse a nested json response'''
         for mapping in mappings:
             if isinstance(mapping, list):
                 # assume we need to return a subset of results using this
                 # mappings items as keys on each subset
                 return [dict((key, item[key]) for key in mapping) for item in response]
 
-            print mapping
             response = response.get(mapping)
+
         return response
 
     def log(self, level, message):
