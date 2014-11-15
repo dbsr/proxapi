@@ -7,6 +7,7 @@ import os
 import json
 
 from flask import abort, request
+from logbook import info, error
 
 
 def authentication_required(f, config):
@@ -26,9 +27,12 @@ def authentication_required(f, config):
             m.update(str(int(time.time())))
 
             if m.hexdigest() == payload['sig']:
+                info('[auth] => valid signature, continue')
                 return f(*args, **kwargs)
 
         except:
+            error('[auth] => could not parse / invalid sig')
+
             pass
 
         # we only get here if the sig is invalid or required params were missing
