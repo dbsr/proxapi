@@ -27,7 +27,7 @@ class BaseApi(object):
     _auth = BaseAuth
     def __init__(self, name, *args, **kwargs):
         self.name = name
-        debug("[{}] initiating api".format(self.name))
+        self.log(info, 'initiating api')
 
         session = requests.Session()
 
@@ -43,8 +43,9 @@ class BaseApi(object):
         if params is None:
             params = {}
 
-        info("[{}] request initiating with resource: '{}' and params: '{}'".format(
-            self.name, resource, repr(params)))
+        self.log(info,
+            "request initiating with resource: '{}' and params: '{}'".format(
+                resource, repr(params)))
 
         # set default params
         params.update(self.default_params)
@@ -56,8 +57,8 @@ class BaseApi(object):
         try:
             r.raise_for_status()
         except:
-            error('[{}] request failed with status_code: {}'.format(
-                self.name, r.status_code))
+            self.log(error, 'request failed with status_code: {}'.format(
+                r.status_code))
             return None
 
         return r
@@ -70,10 +71,14 @@ class BaseApi(object):
         except Exception as e:
             return jsonify(dict(
                 error=e.message)), 400
-        return jsonify(resp)
+
+        # make sure the response is 'jsonifyable'
+        response = dict(response=resp)
+
+        return jsonify(response)
 
 
-    def get(self, resource=None, params=None, *args, **kwargs):
+    def get(self, resource=None, params=None, mappings=None, *args, **kwargs):
         '''make a GET request using provided resource and params.
         Optional mappings will be used to get specific parts of the
         JSON response.'''
@@ -85,4 +90,21 @@ class BaseApi(object):
         resp = self.make_request(resource, params)
         json_response = resp.json()
 
+        if mappings:
+                json_response = self.get_mapped_response(json_response, mappings)
+
         return json_response
+
+    def get_mapped_response(self, response, mappings):
+        for mapping in mappings:
+            if isinstance(mapping, list):
+                # assume we need to return a subset of results using this
+                # mappings items as keys on each subset
+                return [dict((key, item[key]) for key in mapping) for item in response]
+
+            print mapping
+            response = response.get(mapping)
+        return response
+
+    def log(self, level, message):
+        level('[{:>4}] {}'.format(self.name, message))

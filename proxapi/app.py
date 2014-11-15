@@ -17,9 +17,7 @@ from auth import authentication_required
 
 
 def init_app(config=None):
-    secrets = json.load(open(os.path.join(_here, '..', 'secrets.json')))
-
-    apies = instantiate_apies(secrets)
+    apies = instantiate_apies(config['secrets'])
 
     app = Flask(__name__)
 
@@ -35,5 +33,5 @@ def bootstrap_api_routes(app, apies):
     each'''
     for name, api in apies.items():
         route = '/' + name
-        decorated = authentication_required(api.dispatcher)
+        decorated = authentication_required(api.dispatcher, app.config)
         app.add_url_rule(route, name, decorated, methods=['POST'])

@@ -33,10 +33,10 @@ def req(api, payload):
     headers = {'content-type': 'application/json'}
 
     req = requests.post(url, data=json.dumps(payload), headers=headers)
-
-    resp = req.json()
-
-    print resp
+    try:
+        resp = req.json()
+    except:
+        resp = req.content
 
     return resp
 
@@ -47,4 +47,4 @@ if __name__ == '__main__':
     fpath = sys.argv[2] if len(sys.argv) > 2 else 'payload.json'
     payload = json.load(open(fpath))
 
-    req(api, payload)
+    print req(api, payload)
