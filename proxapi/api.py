@@ -43,10 +43,6 @@ class BaseApi(object):
         if params is None:
             params = {}
 
-        self.log(info,
-            "request initiating with resource: '{}' and params: '{}'".format(
-                resource, repr(params)))
-
         # set default params
         params.update(self.default_params)
 
@@ -86,6 +82,12 @@ class BaseApi(object):
             resource = ''
         if not params:
             params = {}
+        if not mappings:
+            mappings = []
+
+        self.log(info,
+                "request dispatched => resource: '{}', params: '{}' and mappings: '{}'".format(
+                    resource, repr(params), repr(mappings)))
 
         resp = self.make_request(resource, params)
         json_response = resp.json()
@@ -108,4 +110,4 @@ class BaseApi(object):
         return response
 
     def log(self, level, message):
-        level('[{:>4}] {}'.format(self.name, message))
+        level('{:>10} {}'.format('[' + self.name + ']', message))
