@@ -12,4 +12,5 @@ config = dict(
         secret=os.environ['LASTFM_SECRET']),
     rovi=dict(
         key=os.environ['ROVI_KEY'],
-        secret=os.environ['ROVI_SECRET']))
+        secret=os.environ['ROVI_SECRET']),
+    app_secret=os.environ['APP_SECRET'])

@@ -5,15 +5,14 @@
 import json
 import hashlib
 import time
+import os
 
 import requests
 
 TEST_APIKEY = '1234abcd1234abcd'
 
-
-secrets = json.load(open('secrets.json'))
-secret = secrets['secret']
-
+secret = os.environ['APP_SECRET']
+print secret
 
 def create_sig(apikey):
     sha = hashlib.sha512()
@@ -26,7 +25,7 @@ def create_sig(apikey):
 
 def req(api, payload):
 
-    url = 'http://localhost:9999/' + api
+    url = 'http://proxapi.herokuapp.com/' + api
     payload.update(dict(
         key=TEST_APIKEY,
         sig=create_sig(TEST_APIKEY)))

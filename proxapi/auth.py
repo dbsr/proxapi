@@ -22,7 +22,7 @@ def authentication_required(f, config):
             # the order of updates is important
             m = hashlib.sha512()
             m.update(payload['key'])
-            m.update(config['secrets']['secret'])
+            m.update(config['app_secret'])
             m.update(str(int(time.time())))
 
             if m.hexdigest() == payload['sig']:
