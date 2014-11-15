@@ -12,6 +12,7 @@ from logbook import info, error
 
 def authentication_required(f, config):
     '''aborts if no valid signature valid in request payload'''
+    info(config['app_secret'])
     def decorator(*args, **kwargs):
         if config['DEBUG']:
             # signature not needed in DEBUG mode, continue
