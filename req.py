@@ -18,7 +18,7 @@ def create_sig(apikey):
     sha = hashlib.sha512()
     sha.update(apikey)
     sha.update(secret)
-    sha.update(str(int(time.time())))
+    #sha.update(str(int(time.time())))
 
     return sha.hexdigest()
 

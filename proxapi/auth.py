@@ -25,7 +25,7 @@ def authentication_required(f, config):
             m = hashlib.sha512()
             m.update(payload['key'])
             m.update(config['app_secret'])
-            m.update(str(int(time.time())))
+            #m.update(str(int(time.time())))
 
             if m.hexdigest() == payload['sig']:
                 info('[auth] => valid signature, continue')
