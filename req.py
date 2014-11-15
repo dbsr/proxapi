@@ -18,7 +18,7 @@ def create_sig(apikey):
     sha = hashlib.sha512()
     sha.update(apikey)
     sha.update(secret)
-    #sha.update(str(int(time.time())))
+    sha.update(str(int(time.time())))
 
     return sha.hexdigest()
 
@@ -28,7 +28,8 @@ def req(api, payload):
     url = 'http://proxapi.herokuapp.com/' + api
     payload.update(dict(
         key=TEST_APIKEY,
-        sig=create_sig(TEST_APIKEY)))
+        sig=create_sig(TEST_APIKEY),
+        time=int(time.time())))
     headers = {'content-type': 'application/json'}
 
     req = requests.post(url, data=json.dumps(payload), headers=headers)

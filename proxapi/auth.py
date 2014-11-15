@@ -21,6 +21,8 @@ def authentication_required(f, config):
         try:
             payload = request.get_json()
             cur_time = int(time.time())
+            info('my time: {}'.format(cur_time))
+            info('your time: {}'.format(payload['time']))
 
             # allow for latency of max 2000ms
             for timestamp in xrange(cur_time, cur_time - 3, -1):
